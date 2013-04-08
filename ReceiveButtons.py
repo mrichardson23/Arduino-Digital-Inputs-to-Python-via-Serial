@@ -18,6 +18,7 @@ ser = serial.Serial(SerialPorts[0], 9600, timeout=1) # create the serial object
 time.sleep(2) # Arduino needs time to reset after a serial connection.
 
 ser.flushInput() # Clear the buffer
+ser.write('a') # send a byte to get the data.
 inByte = ser.read(1) # Grab the next byte (timesout after 1 sec, as set above)
 inByte = int(inByte.encode('hex'), 16) #Convert the hex string into an int.
 

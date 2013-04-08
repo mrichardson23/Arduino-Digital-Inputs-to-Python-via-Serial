@@ -12,11 +12,11 @@
    The state of 8 digital inputs (like buttons or switches) can be sent via serial
    in a single byte. This is because there are 8 bits in a byte, each with a state of
    on or off.
-  
+ 
    To use this code as is, use 8 normally open buttons. One side of each pin connects
    to the digital inputs 2 through 9 (or otherwise if you change FIRST_PIN below).
    The other side of all the buttons connect to GND.
-
+   
 */
 
 #define FIRST_PIN 2
@@ -31,7 +31,8 @@ void setup() {
 }
 
 void loop() {
-    byte response = 0; // Start with a new, empty byte.
+  if (Serial.available() > 0) { // any bytes in coming? If so:
+    byte response = 0;
     for (int i = 7; i >= 0; i--) { // Let's work backwards through each pin.
       if(digitalRead(FIRST_PIN + i) == LOW) { // if the pin is LOW, meaning the button is pressed
         response = response << 1; // Shift all bits to the left one spot. Has no real effect on first iteration (0=00000000)
@@ -42,6 +43,8 @@ void loop() {
       }
     }
     Serial.write(response); // When we're done, write the byte out via serial.
-    delay(100); // Go easy on the serial.
+    do {
+      Serial.read(); 
+    } while (Serial.available() != 0); // clear out any remaining bytes in the incoming buffer.
+  }
 }
-
