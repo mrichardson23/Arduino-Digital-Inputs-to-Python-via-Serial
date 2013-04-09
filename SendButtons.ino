@@ -18,12 +18,12 @@
    
 */
 
-int pins[8] = { 2, 3, 4, 5, 6, 7, 8 };
+int pins[8] = { 2, 3, 4, 5, 6, 7, 8, 9 };
 
 void setup() {
   Serial.begin(9600);
 
-  for (int i = 0; i < 8; i++) { // for each of 8 pins starting with the FIRST_PIN
+  for (int i = 0; i < 8; i++) { // for each of 8 pins in pins array
     pinMode(pins[i], INPUT); // each pin is an input
     digitalWrite(pins[i], HIGH); // and turn on pull up resistors
   }
