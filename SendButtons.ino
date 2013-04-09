@@ -4,10 +4,9 @@
    http://mattrichardson.com/
    April 7, 2013
    
-   This Arduino and Python code is an easy way to get the state of 8 eight
+   This Arduino and Python code is an easy way to get the state of eight
    digital inputs from the Arduino and pass them as a single byte into Python.
-   It's hard-coded to take 8 pins, starting with the pin defined as FIRST_PIN
-   below.
+   It's hard-coded to take 8 pins, however you can use any eight pins.
    
    The state of 8 digital inputs (like buttons or switches) can be sent via serial
    in a single byte. This is because there are 8 bits in a byte, each with a state of
@@ -19,14 +18,14 @@
    
 */
 
-#define FIRST_PIN 2
+int pins[8] = { 2, 3, 4, 5, 6, 7, 8 };
 
 void setup() {
   Serial.begin(9600);
 
-  for (int i = 0; i <= 7; i++) { // for each of 8 pins starting with the FIRST_PIN
-    pinMode(FIRST_PIN + i, INPUT); // each pin is an input
-    digitalWrite(FIRST_PIN + i, HIGH); // and turn on pull up resistors
+  for (int i = 0; i < 8; i++) { // for each of 8 pins starting with the FIRST_PIN
+    pinMode(pins[i], INPUT); // each pin is an input
+    digitalWrite(pins[i], HIGH); // and turn on pull up resistors
   }
 }
 
@@ -34,17 +33,14 @@ void loop() {
   if (Serial.available() > 0) { // any bytes in coming? If so:
     byte response = 0;
     for (int i = 7; i >= 0; i--) { // Let's work backwards through each pin.
-      if(digitalRead(FIRST_PIN + i) == LOW) { // if the pin is LOW, meaning the button is pressed
+      if (digitalRead(pins[i]) == LOW) { // if the pin is LOW, meaning the button is pressed
         response = response << 1; // Shift all bits to the left one spot. Has no real effect on first iteration (0=00000000)
         response += 1; // Set the last bit to one by adding the int 1 to response.
-      }
-      else { // if the pin is HIGH, meaning the button is not pressed...
+      } else { // if the pin is HIGH, meaning the button is not pressed...
         response = response << 1; // Just shift the bits, filling in a 0 in that spot.
       }
     }
     Serial.write(response); // When we're done, write the byte out via serial.
-    do {
-      Serial.read(); 
-    } while (Serial.available() != 0); // clear out any remaining bytes in the incoming buffer.
+    while (Serial.available()) Serial.read(); // clear out any remaining bytes in the incoming buffer.
   }
 }
