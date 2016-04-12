@@ -31,7 +31,7 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) { // any bytes in coming? If so:
-    byte response = 0;
+    byte response = B00000000;
     for (int i = 7; i >= 0; i--) { // Let's work backwards through each pin.
       if (digitalRead(pins[i]) == LOW) { // if the pin is LOW, meaning the button is pressed
         response = response << 1; // Shift all bits to the left one spot. Has no real effect on first iteration (0=00000000)
